@@ -107,4 +107,4 @@ def update_student(student_id):
             return {"message": f"Student with id {student_id} does not exist"}, 404
     
     except IntegrityError:
-        return {"message": "Email address already in use"}, 409
+        return {"message": "Email address already in use"}, 404
