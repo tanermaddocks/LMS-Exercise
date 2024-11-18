@@ -5,7 +5,7 @@ class Teacher(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    department = db.Column(db.String(100), nullable=False, default="english") # may produce error
+    department = db.Column(db.String(100), nullable=False, default="English") # may produce error
     address = db.Column(db.String(100))
 
 class TeacherSchema(ma.Schema):
