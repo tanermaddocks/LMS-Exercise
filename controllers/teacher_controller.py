@@ -15,9 +15,15 @@ teachers_bp = Blueprint("teachers", __name__, url_prefix="/teachers")
 
 
 # Read all - /teachers - GET
+# Read all from a single department - /teachers?department=__ - GET
 @teachers_bp.route("/")
 def get_teachers():
-    return teachers_schema.dump(db.session.scalars(db.select(Teacher)))
+    department = request.args.get("department")
+    if department:
+        stmt = db.select(Teacher).filter_by(department=department)
+    else:
+        stmt = db.select(Teacher)
+    return teachers_schema.dump(db.session.scalars(stmt))
 
 # Read one - /teachers/id - GET
 @teachers_bp.route("/<int:teacher_id>")
