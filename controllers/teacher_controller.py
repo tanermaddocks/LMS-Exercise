@@ -32,8 +32,7 @@ def get_teacher(teacher_id):
     if teacher:
         return teacher_schema.dump(teacher)
     else:
-        return {"message": f"Teacher with id {teacher_id} does not "
-                "exist"}, 404
+        return {"message": f"Teacher with id {teacher_id} doesn't exist"}, 404
 
 # Create - /teachers - POST
 @teachers_bp.route("/", methods=["POST"]) 
@@ -52,3 +51,14 @@ def create_teacher():
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"message": f"The field '{err.orig.diag.column_name}' "
                     "is required"}, 409
+        
+# Delete - /teachers/id - DELETE
+@teachers_bp.route("/<int:teacher_id>", methods=["DELETE"])
+def delete_teacher(teacher_id):
+    teacher = db.session.scalar(db.select(Teacher).filter_by(id=teacher_id))
+    if teacher:
+        db.session.delete(teacher)
+        db.session.commit()
+        return {"message": f"Teacher '{teacher.name}' deleted successfully"}
+    else:
+        return {"message": f"Teacher with id {teacher_id} doesn't exist"}, 404
