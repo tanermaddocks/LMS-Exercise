@@ -1,4 +1,6 @@
 from flask import Blueprint, request
+from sqlalchemy.exc import IntegrityError
+from psycopg2 import errorcodes
 
 from init import db
 from models.teacher import Teacher, teachers_schema, teacher_schema
@@ -24,13 +26,23 @@ def get_teacher(teacher_id):
     if teacher:
         return teacher_schema.dump(teacher)
     else:
-        return {"message": f"Teacher with id {teacher_id} does not exist"}, 404
+        return {"message": f"Teacher with id {teacher_id} does not "
+                "exist"}, 404
 
-# # Create - /teachers - POST
-# @teachers_bp.route("/", methods=["POST"]) 
-# def create_teacher():
-#     body_data = request.get_json()
-#     new_teacher = Teacher(
-#         name=body_data.get("name")
-
-#     )
+# Create - /teachers - POST
+@teachers_bp.route("/", methods=["POST"]) 
+def create_teacher():
+    try:
+        body_data = request.get_json()
+        new_teacher = Teacher(
+            name=body_data.get("name"),
+            department=body_data.get("department"),
+            address=body_data.get("address")
+        )
+        db.session.add(new_teacher)
+        db.session.commit()
+        return teacher_schema.dump(new_teacher), 201
+    except IntegrityError as err:
+        if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
+            return {"message": f"The field '{err.orig.diag.column_name}' "
+                    "is required"}, 409
