@@ -5,8 +5,8 @@ class Course(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
-    duration = db.Column(db.Float)
-    teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"))
+    duration = db.Column(db.Float, nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"), nullable=False)
 
 class CourseSchema(ma.Schema):
     class Meta:
