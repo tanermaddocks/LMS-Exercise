@@ -3,7 +3,7 @@ from flask import Blueprint
 from init import db
 from models.student import Student
 from models.teacher import Teacher
-from models.courses import Course
+from models.course import Course
 
 db_commands = Blueprint("db", __name__)
 
