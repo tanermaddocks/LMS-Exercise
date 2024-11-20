@@ -13,6 +13,8 @@ def create_app():
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
 
+    app.json.sort_keys = False # To prevent sorting
+
     db.init_app(app)
     ma.init_app(app)
 
