@@ -47,3 +47,14 @@ def create_course():
             return {"message": "The name cannot be null"}, 409
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {"message": "Duplicate name"}, 409
+        
+# Delete
+@courses_bp.route("/<int:course_id>", methods=["DELETE"])
+def delete_course(course_id):
+    course = db.session.scalar(db.select(Course).filter_by(id=course_id))
+    if course:
+        db.session.delete(course)
+        db.session.commit()
+        return {"message": f"Course '{course.name}' deleted successfully"}
+    else:
+        return {"message": f"Course with id {course_id} doesn't exist"}, 404
