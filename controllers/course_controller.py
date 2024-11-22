@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 
 from init import db
 from models.course import Course, courses_schema, course_schema
@@ -22,3 +22,16 @@ def get_course(course_id):
         return course_schema.dump(course)
     else:
         return {"message": f"Course with id {course_id} does not exist"}, 404
+    
+# Create
+@courses_bp.route("/", methods=["POST"])
+def create_course():
+    body_data = request.get_json()
+    course = Course(
+        name=body_data.get("name"),
+        duration=body_data.get("duration"),
+        teacher_id=body_data.get("teacher_id")
+    )
+    db.session.add(course)
+    db.session.commit()
+    return course_schema.dump(course), 201
