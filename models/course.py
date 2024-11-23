@@ -11,12 +11,14 @@ class Course(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"), nullable=False)
 
     teacher = db.relationship("Teacher", back_populates="courses")
+    enrolments = db.relationship("Enrolment", back_populates="course", cascade="all, delete")
 
 class CourseSchema(ma.Schema):
     ordered = True
     teacher = fields.Nested("TeacherSchema", only=["name", "department"])
+    enrolments = fields.List(fields.Nested("EnrolmentSchema", exclude=["course"]))
     class Meta:
-        fields = ("id", "name", "duration", "teacher_id", "teacher")
+        fields = ("id", "name", "duration", "teacher_id", "teacher", "enrolments")
 
 course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
