@@ -4,7 +4,6 @@ from init import db, ma
 
 class Enrolment(db.Model):
     __tablename__ = "enrolments"
-
     __table_args__ = (
         db.UniqueConstraint("student_id", "course_id", name="unique_student_course"),
     )
