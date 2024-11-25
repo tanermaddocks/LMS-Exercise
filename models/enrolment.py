@@ -14,7 +14,7 @@ class Enrolment(db.Model):
     course = db.relationship("Course", back_populates="enrolments")
 
 class EnrolmentSchema(ma.Schema):
-    students = fields.Nested("StudentSchema", only=["name", "email"])
+    student = fields.Nested("StudentSchema", only=["name", "email"])
     course = fields.Nested("CourseSchema", only=["name", "duration"])
     class Meta:
         fields = ("id", "student_id", "course_id", "enrolment_date", "student", "course")
