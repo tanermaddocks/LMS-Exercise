@@ -30,7 +30,7 @@ def get_course(course_id):
 def create_course():
     try:
         # get the data from the request body
-        body_data = request.get_json()
+        body_data = course_schema.load(request.get_json())
         # create a Course instance
         course = Course(
             name=body_data.get("name"),
@@ -65,7 +65,7 @@ def update_course(course_id):
     try:
         stmt = db.select(Course).filter_by(id=course_id)
         course = db.session.scalar(stmt)
-        body_data = request.get_json()
+        body_data = course_schema.load(request.get_json(), partial=True)
         if course:
             course.name = body_data.get("name") or course.name
             course.duration = body_data.get("duration") or course.duration
