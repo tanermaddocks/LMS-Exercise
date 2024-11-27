@@ -73,8 +73,9 @@ def update_enrolment(enrolment_id):
             db.session.commit()
             return enrolment_schema.dump(enrolment)
         else:
-            return {"message": f"Enrolment with id {enrolment_id} does not exist"}
+            return {"message": f"Enrolment with id {enrolment_id} does not exist"}, 404
+    except IntegrityError as err:
+        if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+            return {"message": err.orig.diag.message_detail}, 409
     except DataError as err:
-        # for attr in dir(err.orig.diag):
-        #     print("obj.%s = %r" % (attr, getattr(err.orig.diag, attr)))
         return {"message": err.orig.diag.message_primary}, 409
