@@ -30,7 +30,7 @@ def get_enrolment(enrolment_id):
 def create_enrolment():
     try:
         # get the data from the request body
-        body_data = request.get_json()
+        body_data = enrolment_schema.load(request.get_json())
         # create a Enrolment instance
         enrolment = Enrolment(
             enrolment_date=body_data.get("enrolment_date"),
@@ -65,7 +65,7 @@ def update_enrolment(enrolment_id):
     try:
         stmt = db.select(Enrolment).filter_by(id=enrolment_id)
         enrolment = db.session.scalar(stmt)
-        body_data = request.get_json()
+        body_data = enrolment_schema.load(request.get_json(), partial=True)
         if enrolment:
             enrolment.enrolment_date = body_data.get("enrolment_date") or enrolment.enrolment_date
             enrolment.student_id = body_data.get("student_id") or enrolment.student_id
